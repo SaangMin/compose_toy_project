@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "ComposeToyProject"
 include(":app")
 include(":stopwatch")
+include(":mywebbrowser")
