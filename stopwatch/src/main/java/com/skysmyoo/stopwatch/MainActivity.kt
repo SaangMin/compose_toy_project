@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skysmyoo.stopwatch.ui.theme.ComposeToyProjectTheme
 import java.util.Timer
 import kotlin.concurrent.timer
@@ -43,7 +44,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val viewModel = viewModel<MainViewModel>()
 
+            val sec = viewModel.sec.value
+            val milli = viewModel.milli.value
+            val isRunning = viewModel.isRunning.value
+            val lapTimes = viewModel.lapTimes.value
+
+            MainScreen(
+                sec = sec,
+                milli = milli,
+                isRunning = isRunning,
+                lapTimes = lapTimes,
+                onReset = { viewModel.reset() },
+                onToggle = { running ->
+                    if (running) {
+                        viewModel.pause()
+                    } else {
+                        viewModel.start()
+                    }
+                },
+                onLapTime = { viewModel.recordLapTime() }
+            )
         }
     }
 }
