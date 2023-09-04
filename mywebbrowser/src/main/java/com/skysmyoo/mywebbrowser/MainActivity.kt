@@ -28,25 +28,35 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skysmyoo.mywebbrowser.ui.theme.ComposeToyProjectTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen()
+            val viewModel = viewModel<MainViewModel>()
+            HomeScreen(viewModel)
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: MainViewModel) {
+    val focusManager = LocalFocusManager.current
+    val (inputUrl, setUrl) = rememberSaveable {
+        mutableStateOf("https://www.google.com")
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -78,28 +88,28 @@ fun HomeScreen() {
                 .fillMaxSize()
         ) {
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = inputUrl,
+                onValueChange = setUrl,
                 label = { Text("https://") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-                ,
+                    .padding(8.dp),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
-
+                    viewModel.url.value = inputUrl
+                    focusManager.clearFocus()
                 })
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            MyWebView()
+            MyWebView(viewModel)
         }
     }
 }
 
 @Composable
-fun MyWebView() {
+fun MyWebView(viewModel: MainViewModel) {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = {
@@ -109,14 +119,8 @@ fun MyWebView() {
                 loadUrl("https://google.com")
             }
         },
-        update = {
-
+        update = { webView ->
+            webView.loadUrl(viewModel.url.value)
         }
     )
-}
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
 }
