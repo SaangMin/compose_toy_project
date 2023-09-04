@@ -17,3 +17,4 @@ rootProject.name = "ComposeToyProject"
 include(":app")
 include(":stopwatch")
 include(":mywebbrowser")
+include(":mygallery")
