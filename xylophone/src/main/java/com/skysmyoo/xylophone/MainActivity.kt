@@ -1,11 +1,14 @@
 package com.skysmyoo.xylophone
 
 import android.app.Application
+import android.content.pm.ActivityInfo
 import android.media.SoundPool
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,10 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.AndroidViewModel
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
+    private val viewModel by viewModels<MainViewModel>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            XylophoneScreen(viewModel = viewModel)
         }
     }
 }
@@ -56,7 +63,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 @Composable
-fun XylophoneScreen() {
+fun XylophoneScreen(
+    viewModel: MainViewModel,
+) {
     val keys = listOf(
         Pair("도", Color.Red),
         Pair("레", Color(0xFFFF9800)),
@@ -76,7 +85,10 @@ fun XylophoneScreen() {
             val padding = (index + 2) * 8
             Keyboard(
                 modifier = Modifier
-                    .padding(top = padding.dp, bottom = padding.dp),
+                    .padding(top = padding.dp, bottom = padding.dp)
+                    .clickable {
+                        viewModel.playSound(index)
+                    },
                 text = key.first,
                 color = key.second,
             )
