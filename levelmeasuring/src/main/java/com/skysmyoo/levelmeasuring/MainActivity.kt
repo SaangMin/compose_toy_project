@@ -2,13 +2,16 @@ package com.skysmyoo.levelmeasuring
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -25,10 +28,19 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
+    private val viewModel by viewModels<MainViewModel>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        //화면이 꺼지지 않게 하기
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        //화면 가로모드로 고정되게 하기
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        super.onCreate(savedInstanceState)
+
+        lifecycle.addObserver(viewModel)
+
+        setContent {
+            TiltScreen(x = viewModel.x.value, y = viewModel.y.value)
         }
     }
 }
