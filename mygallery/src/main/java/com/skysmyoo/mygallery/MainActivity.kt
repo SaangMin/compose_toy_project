@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 
             if (ContextCompat.checkSelfPermission(
                     this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_MEDIA_IMAGES,
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 granted = true
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 Text("권한 허용됨")
             } else {
                 PermissionRequestScreen {
-                    launcher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    launcher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                 }
             }
         }
