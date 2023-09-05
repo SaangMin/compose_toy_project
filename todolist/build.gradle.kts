@@ -4,6 +4,10 @@ plugins {
     id("kotlin-kapt")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     namespace = "com.skysmyoo.todolist"
     compileSdk = 33
@@ -31,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
@@ -72,11 +76,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01")
 
     //Room
-    val room_version = "2.3.0"
 
-    implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
 
     //optional - Kotlin Extensions
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-ktx:2.5.2")
 }
